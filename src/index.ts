@@ -61,10 +61,23 @@ export class TypeScriptPlugin {
     }
   }
 
-  get functions() {
+  get allFunctions() {
     return this.options.function
-      ? { [this.options.function] : this.serverless.service.functions[this.options.function] }
+      ? { [this.options.function]: this.serverless.service.functions[this.options.function] }
       : this.serverless.service.functions
+  }
+
+  get functions() {
+    const supportedRuntimesRegex = /^nodejs|google/
+    const globalRuntimeSupported = supportedRuntimesRegex.test(this.serverless.service.provider.runtime)
+    const supportedFunctions = {}
+    for (const f in this.allFunctions) {
+        const item = this.allFunctions[f]
+        if ((!item.runtime && globalRuntimeSupported) || item.runtime && supportedRuntimesRegex.test(item.runtime)) {
+            supportedFunctions[f] = item
+        }
+    }
+    return supportedFunctions
   }
 
   get rootFileNames() {

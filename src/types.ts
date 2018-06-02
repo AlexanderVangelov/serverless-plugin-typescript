@@ -7,7 +7,8 @@ export interface ServerlessInstance {
   }
   service: {
     provider: {
-      name: string
+      name: string,
+      runtime: string
     }
     functions: { [key: string]: ServerlessFunction }
     package: ServerlessPackage
@@ -25,6 +26,7 @@ export interface ServerlessOptions {
 export interface ServerlessFunction {
   handler: string
   package: ServerlessPackage
+  runtime?: string
 }
 
 export interface ServerlessPackage {
